@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameVaultX - Ultimate Gaming Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            dark: '#0a0a0f',
+                            purple: '#b026ff',
+                            cyan: '#00f3ff',
+                            pink: '#ff00ff',
+                            blue: '#0066ff',
+                            surface: '#151520',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'glitch': 'glitch 1s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px #b026ff, 0 0 10px #b026ff' },
+                            '100%': { boxShadow: '0 0 20px #b026ff, 0 0 30px #b026ff' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        glitch: {
+                            '0%, 100%': { transform: 'translate(0)' },
+                            '20%': { transform: 'translate(-2px, 2px)' },
+                            '40%': { transform: 'translate(-2px, -2px)' },
+                            '60%': { transform: 'translate(2px, 2px)' },
+                            '80%': { transform: 'translate(2px, -2px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #0a0a0f;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+        }
+        
+        .glass-panel {
+            background: rgba(21, 21, 32, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(176, 38, 255, 0.2);
+        }
+        
+        .game-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(176, 38, 255, 0.3);
+        }
+        
+        .category-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .category-btn:hover::before {
+            left: 100%;
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(176, 38, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(176, 38, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .telegram-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #b026ff, #00f3ff);
+            z-index: 9999;
+            transition: width 0.1s;
+        }
+        
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00ff;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 #00f3ff;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 85px, 0); }
+            20% { clip: rect(63px, 9999px, 130px, 0); }
+            40% { clip: rect(25px, 9999px, 5px, 0); }
+            60% { clip: rect(76px, 9999px, 100px, 0); }
+            80% { clip: rect(15px, 9999px, 170px, 0); }
+            100% { clip: rect(50px, 9999px, 90px, 0); }
+        }
+        
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .platform-badge {
+            transition: all 0.3s;
+        }
+        
+        .platform-badge:hover {
+            transform: scale(1.1);
+            filter: brightness(1.3);
+        }
+        
+        .search-expand {
+            width: 40px;
+            transition: width 0.3s ease;
+        }
+        
+        .search-expand:focus {
+            width: 250px;
+        }
+        
+        .ranking-number {
+            background: linear-gradient(135deg, #b026ff, #00f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel border-b border-cyber-purple/20 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-2 group cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <i class="fas fa-gamepad text-3xl text-cyber-cyan group-hover:animate-pulse"></i>
+                    <span class="font-orbitron text-2xl font-bold bg-gradient-to-r from-cyber-cyan to-cyber-purple bg-clip-text text-transparent">
+                        GameVaultX
+                    </span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#trending" class="nav-link text-gray-300 hover:text-cyber-cyan transition-colors font-medium tracking-wide">Trending</a>
+                    <a href="#categories" class="nav-link text-gray-300 hover:text-cyber-cyan transition-colors font-medium tracking-wide">Categories</a>
+                    <a href="#console" class="nav-link text-gray-300 hover:text-cyber-cyan transition-colors font-medium tracking-wide">Console & PC</a>
+                    <a href="#mobile" class="nav-link text-gray-300 hover:text-cyber-cyan transition-colors font-medium tracking-wide">Mobile</a>
+                    <a href="#emulators" class="nav-link text-gray-300 hover:text-cyber-cyan transition-colors font-medium tracking-wide">Emulators</a>
+                    <a href="#video-library" class="nav-link text-gray-300 hover:text-cyber-cyan transition-colors font-medium tracking-wide">Video Library</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Search games..." 
+                               class="search-expand bg-cyber-surface border border-cyber-purple/30 rounded-full px-4 py-1 text-sm focus:outline-none focus:border-cyber-cyan text-white placeholder-gray-500">
+                        <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-cyber-purple"></i>
+                    </div>
+                    <button class="md:hidden text-gray-300 hover:text-white" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden glass-panel border-t border-cyber-purple/20">
+            <div class="px-4 pt-2 pb-4 space-y-2">
+                <a href="#trending" class="block py-2 text-gray-300 hover:text-cyber-cyan">Trending</a>
+                <a href="#categories" class="block py-2 text-gray-300 hover:text-cyber-cyan">Categories</a>
+                <a href="#console" class="block py-2 text-gray-300 hover:text-cyber-cyan">Console & PC</a>
+                <a href="#mobile" class="block py-2 text-gray-300 hover:text-cyber-cyan">Mobile</a>
+                <a href="#emulators" class="block py-2 text-gray-300 hover:text-cyber-cyan">Emulators</a>
+                <a href="#video-library" class="block py-2 text-gray-300 hover:text-cyber-cyan">Video Library</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden parallax-bg" 
+             style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1920&q=80');">
+        <div class="absolute inset-0 bg-gradient-to-b from-cyber-dark/60 via-cyber-dark/40 to-cyber-dark"></div>
+        <div class="absolute inset-0 grid-bg opacity-30"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
+            <div class="mb-6 inline-block">
+                <span class="px-4 py-1 rounded-full border border-cyber-cyan/50 text-cyber-cyan text-sm font-orbitron tracking-wider animate-pulse">
+                    ULTIMATE GAMING HUB
+                </span>
+            </div>
+            
+            <h1 class="font-orbitron text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight">
+                <span class="glitch-text text-white" data-text="LEVEL UP">LEVEL UP</span><br>
+                <span class="bg-gradient-to-r from-cyber-cyan via-cyber-purple to-cyber-pink bg-clip-text text-transparent neon-text">
+                    YOUR GAMING
+                </span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto font-light leading-relaxed">
+                Discover the latest in gaming culture, from retro classics to modern esports. 
+                Console, mobile, emulators - we've got it all.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button onclick="document.getElementById('trending').scrollIntoView({behavior: 'smooth'})" 
+                        class="group relative px-8 py-4 bg-gradient-to-r from-cyber-purple to-cyber-pink rounded-lg font-orbitron font-bold text-lg overflow-hidden transition-transform hover:scale-105">
+                    <span class="relative z-10">Explore Games</span>
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                </button>
+                
+                <button onclick="document.getElementById('video-library').scrollIntoView({behavior: 'smooth'})" 
+                        class="px-8 py-4 border-2 border-cyber-cyan text-cyber-cyan rounded-lg font-orbitron font-bold text-lg hover:bg-cyber-cyan hover:text-cyber-dark transition-all">
+                    <i class="fas fa-play mr-2"></i>Watch Trailers
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+                <div class="text-center">
+                    <div class="text-3xl md:text-4xl font-orbitron font-bold text-cyber-cyan">10K+</div>
+                    <div class="text-sm text-gray-400 mt-1">Games</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl md:text-4xl font-orbitron font-bold text-cyber-purple">50+</div>
+                    <div class="text-sm text-gray-400 mt-1">Categories</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl md:text-4xl font-orbitron font-bold text-cyber-pink">1M+</div>
+                    <div class="text-sm text-gray-400 mt-1">Users</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="fas fa-chevron-down text-2xl text-cyber-cyan"></i>
+        </div>
+    </section>
+
+    <!-- Hot Right Now / Trending -->
+    <section id="trending" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="text-cyber-pink font-orbitron text-sm tracking-widest">HOT RIGHT NOW</span>
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold mt-2 mb-4">Trending Games</h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-cyber-cyan to-cyber-purple mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Game Card 1 -->
+                <div class="game-card glass-panel rounded-2xl overflow-hidden group scroll-reveal">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&q=80" 
+                             alt="Cyber Odyssey" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cyber-dark to-transparent"></div>
+                        <div class="absolute top-4 right-4 bg-cyber-pink/90 px-3 py-1 rounded-full text-xs font-bold">HOT</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-orbitron font-bold mb-2 text-white group-hover:text-cyber-cyan transition-colors">Cyber Odyssey 2077</h3>
+                        <p class="text-cyber-purple text-sm mb-4 font-medium">RPG / Action</p>
+                        <div class="flex gap-2 mb-4">
+                            <span class="platform-badge px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded text-xs text-blue-400">PC</span>
+                            <span class="platform-badge px-3 py-1 bg-indigo-600/20 border border-indigo-500/30 rounded text-xs text-indigo-400">PS5</span>
+                            <span class="platform-badge px-3 py-1 bg-green-600/20 border border-green-500/30 rounded text-xs text-green-400">Xbox</span>
+                        </div>
+                        <button class="w-full py-2 border border-cyber-cyan/50 text-cyber-cyan rounded hover:bg-cyber-cyan hover:text-cyber-dark transition-all font-medium">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Game Card 2 -->
+                <div class="game-card glass-panel rounded-2xl overflow-hidden group scroll-reveal" style="transition-delay: 100ms;">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&q=80" 
+                             alt="Fantasy Realms" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cyber-dark to-transparent"></div>
+                        <div class="absolute top-4 right-4 bg-cyber-cyan/90 px-3 py-1 rounded-full text-xs font-bold text-cyber-dark">NEW</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-orbitron font-bold mb-2 text-white group-hover:text-cyber-cyan transition-colors">Fantasy Realms</h3>
+                        <p class="text-cyber-purple text-sm mb-4 font-medium">MMORPG</p>
+                        <div class="flex gap-2 mb-4">
+                            <span class="platform-badge px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded text-xs text-blue-400">PC</span>
+                            <span class="platform-badge px-3 py-1 bg-indigo-600/20 border border-indigo-500/30 rounded text-xs text-indigo-400">PS5</span>
+                        </div>
+                        <button class="w-full py-2 border border-cyber-cyan/50 text-cyber-cyan rounded hover:bg-cyber-cyan hover:text-cyber-dark transition-all font-medium">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Game Card 3 -->
+                <div class="game-card glass-panel rounded-2xl overflow-hidden group scroll-reveal" style="transition-delay: 200ms;">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&q=80" 
+                             alt="Racing Evolution" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cyber-dark to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-orbitron font-bold mb-2 text-white group-hover:text-cyber-cyan transition-colors">Racing Evolution</h3>
+                        <p class="text-cyber-purple text-sm mb-4 font-medium">Racing</p>
+                        <div class="flex gap-2 mb-4">
+                            <span class="platform-badge px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded text-xs text-blue-400">PC</span>
+                            <span class="platform-badge px-3 py-1 bg-indigo-600/20 border border-indigo-500/30 rounded text-xs text-indigo-400">PS5</span>
+                            <span class="platform-badge px-3 py-1 bg-green-600/20 border border-green-500/30 rounded text-xs text-green-400">Xbox</span>
+                            <span class="platform-badge px-3 py-1 bg-red-600/20 border border-red-500/30 rounded text-xs text-red-400">Switch</span>
+                        </div>
+                        <button class="w-full py-2 border border-cyber-cyan/50 text-cyber-cyan rounded hover:bg-cyber-cyan hover:text-cyber-dark transition-all font-medium">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section id="categories" class="py-20 bg-cyber-surface/30 relative">
+        <div class="absolute inset-0 grid-bg opacity-20"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="text-cyber-cyan font-orbitron text-sm tracking-widest">BROWSE BY TYPE</span>
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold mt-2 mb-4">Game Categories</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Click any category to view Top 100 ranked games</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="filterCategory('action')" class="category-btn glass-panel p-6 rounded-xl hover:border-cyber-cyan/50 transition-all group text-center scroll-reveal">
+                    <i class="fas fa-crosshairs text-4xl text-cyber-cyan mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="font-orbitron font-bold text-lg">Action</h3>
+                    <p class="text-sm text-gray-400 mt-1">2,400+ games</p>
+                </button>
+                
+                <button onclick="filterCategory('rpg')" class="category-btn glass-panel p-6 rounded-xl hover:border-cyber-purple/50 transition-all group text-center scroll-reveal" style="transition-delay: 50ms;">
+                    <i class="fas fa-dragon text-4xl text-cyber-purple mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="font-orbitron font-bold text-lg">RPG</h3>
+                    <p class="text-sm text-gray-400 mt-1">1,800+ games</p>
+                </button>
+                
+                <button onclick="filterCategory('sports')" class="category-btn glass-panel p-6 rounded-xl hover:border-cyber-pink/50 transition-all group text-center scroll-reveal" style="transition-delay: 100ms;">
+                    <i class="fas fa-futbol text-4xl text-cyber-pink mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="font-orbitron font-bold text-lg">Sports</h3>
+                    <p class="text-sm text-gray-400 mt-1">900+ games</p>
+                </button>
+                
+                <button onclick="filterCategory('strategy')" class="category-btn glass-panel p-6 rounded-xl hover:border-green-500/50 transition-all group text-center scroll-reveal" style="transition-delay: 150ms;">
+                    <i class="fas fa-chess text-4xl text-green-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="font-orbitron font-bold text-lg">Strategy</h3>
+                    <p class="text-sm text-gray-400 mt-1">1,200+ games</p>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Console & PC -->
+    <section id="console" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="scroll-reveal">
+                    <span class="text-cyber-purple font-orbitron text-sm tracking-widest">CONSOLE & PC</span>
+                    <h2 class="text-4xl md:text-5xl font-orbitron font-bold mt-2 mb-6">Console & PC Games</h2>
+                    <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                        Explore the biggest collection of console and PC games. From PlayStation exclusives to Xbox Game Pass hits and PC masterpieces - find your next adventure.
+                    </p>
+                    
+                    <div class="glass-panel rounded-xl p-6 mb-6 border-l-4 border-cyber-cyan">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-orbitron font-bold text-xl text-cyber-cyan">Nintendo Switch</h3>
+                            <span class="text-2xl font-bold text-white">900+</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">games available</p>
+                        <div class="mt-4 h-2 bg-cyber-surface rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-cyber-cyan to-cyber-purple w-3/4"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h4 class="font-orbitron font-bold text-lg mb-4">Top Rated 2025</h4>
+                        
+                        <div class="flex items-center gap-4 p-4 glass-panel rounded-lg hover:bg-cyber-surface/50 transition-colors cursor-pointer group">
+                            <span class="ranking-number text-3xl font-orbitron w-12">#2</span>
+                            <div class="flex-1">
+                                <h5 class="font-bold group-hover:text-cyber-cyan transition-colors">Clair Obscur: Expedition 33</h5>
+                                <p class="text-sm text-gray-400">RPG • Turn-based</p>
+                            </div>
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1">9.4</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 glass-panel rounded-lg hover:bg-cyber-surface/50 transition-colors cursor-pointer group">
+                            <span class="ranking-number text-3xl font-orbitron w-12">#7</span>
+                            <div class="flex-1">
+                                <h5 class="font-bold group-hover:text-cyber-cyan transition-colors">Assassin's Creed Shadows</h5>
+                                <p class="text-sm text-gray-400">Action • Open World</p>
+                            </div>
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1">8.9</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 glass-panel rounded-lg hover:bg-cyber-surface/50 transition-colors cursor-pointer group">
+                            <span class="ranking-number text-3xl font-orbitron w-12">#8</span>
+                            <div class="flex-1">
+                                <h5 class="font-bold group-hover:text-cyber-cyan transition-colors">Kingdom Come: Deliverance 2</h5>
+                                <p class="text-sm text-gray-400">RPG • Historical</p>
+                            </div>
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1">8.8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative scroll-reveal">
+                    <div class="absolute -inset-4 bg-gradient-to-r from-cyber-cyan to-cyber-purple rounded-2xl opacity-20 blur-xl"></div>
+                    <img src="https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&q=80" 
+                         alt="Gaming Setup" class="relative rounded-2xl shadow-2xl w-full object-cover h-[600px]">
+                    
+                    <div class="absolute bottom-6 left-6 right-6 glass-panel rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-400">Featured Collection</p>
+                                <p class="font-orbitron font-bold text-lg">Next-Gen Gaming</p>
+                            </div>
+                            <button class="px-4 py-2 bg-cyber-purple rounded-lg hover:bg-cyber-purple/80 transition-colors">
+                                Explore
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Gaming -->
+    <section id="mobile" class="py-20 bg-cyber-surface/30 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-cyber-purple/10 rounded-full blur-3xl"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="text-cyber-pink font-orbitron text-sm tracking-widest">MOBILE GAMING</span>
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold mt-2 mb-4">Mobile & Android Games</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Discover the most popular mobile games on iOS and Android. From casual puzzles to competitive shooters.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Mobile Game 1 -->
+                <div class="glass-panel rounded-xl p-6 flex items-center gap-4 hover:border-cyber-pink/50 transition-all cursor-pointer group scroll-reveal">
+                    <div class="w-20 h-20 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-3xl font-bold text-white shadow-lg group-hover:scale-110 transition-transform">
+                        B
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-orbitron font-bold text-lg group-hover:text-cyber-pink transition-colors">Block Blast</h3>
+                        <p class="text-cyber-pink font-bold">300M+ downloads</p>
+                        <div class="flex gap-1 mt-1">
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star-half-alt text-yellow-400 text-xs"></i>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-500 group-hover:text-cyber-pink transition-colors"></i>
+                </div>
+
+                <!-- Mobile Game 2 -->
+                <div class="glass-panel rounded-xl p-6 flex items-center gap-4 hover:border-cyber-pink/50 transition-all cursor-pointer group scroll-reveal" style="transition-delay: 50ms;">
+                    <div class="w-20 h-20 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-3xl font-bold text-white shadow-lg group-hover:scale-110 transition-transform">
+                        P
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-orbitron font-bold text-lg group-hover:text-cyber-pink transition-colors">PUBG Mobile</h3>
+                        <p class="text-cyber-pink font-bold">180M+ downloads</p>
+                        <div class="flex gap-1 mt-1">
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-500 group-hover:text-cyber-pink transition-colors"></i>
+                </div>
+
+                <!-- Mobile Game 3 -->
+                <div class="glass-panel rounded-xl p-6 flex items-center gap-4 hover:border-cyber-pink/50 transition-all cursor-pointer group scroll-reveal" style="transition-delay: 100ms;">
+                    <div class="w-20 h-20 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-3xl font-bold text-white shadow-lg group-hover:scale-110 transition-transform">
+                        G
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-orbitron font-bold text-lg group-hover:text-cyber-pink transition-colors">Genshin Impact</h3>
+                        <p class="text-cyber-pink font-bold">22M+ downloads</p>
+                        <div class="flex gap-1 mt-1">
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star-half-alt text-yellow-400 text-xs"></i>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-500 group-hover:text-cyber-pink transition-colors"></i>
+                </div>
+
+                <!-- Mobile Game 4 -->
+                <div class="glass-panel rounded-xl p-6 flex items-center gap-4 hover:border-cyber-pink/50 transition-all cursor-pointer group scroll-reveal" style="transition-delay: 150ms;">
+                    <div class="w-20 h-20 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-3xl font-bold text-white shadow-lg group-hover:scale-110 transition-transform">
+                        C
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-orbitron font-bold text-lg group-hover:text-cyber-pink transition-colors">Candy Crush Saga</h3>
+                        <p class="text-cyber-pink font-bold">150M+ downloads</p>
+                        <div class="flex gap-1 mt-1">
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="far fa-star text-yellow-400 text-xs"></i>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-500 group-hover:text-cyber-pink transition-colors"></i>
+                </div>
+
+                <!-- Mobile Game 5 -->
+                <div class="glass-panel rounded-xl p-6 flex items-center gap-4 hover:border-cyber-pink/50 transition-all cursor-pointer group scroll-reveal" style="transition-delay: 200ms;">
+                    <div class="w-20 h-20 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-3xl font-bold text-white shadow-lg group-hover:scale-110 transition-transform">
+                        M
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-orbitron font-bold text-lg group-hover:text-cyber-pink transition-colors">Mobile Legends</h3>
+                        <p class="text-cyber-pink font-bold">80M+ downloads</p>
+                        <div class="flex gap-1 mt-1">
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                            <i class="fas fa-star-half-alt text-yellow-400 text-xs"></i>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-500 group-hover:text-cyber-pink transition-colors"></i>
+                </div>
+
+                <!-- View All Card -->
+                <div class="glass-panel rounded-xl p-6 flex items-center justify-center border-dashed border-2 border-cyber-purple/30 hover:border-cyber-purple hover:bg-cyber-purple/10 transition-all cursor-pointer group scroll-reveal" style="transition-delay: 250ms;">
+                    <div class="text-center">
+                        <i class="fas fa-plus-circle text-4xl text-cyber-purple mb-2 group-hover:scale-110 transition-transform"></i>
+                        <p class="font-orbitron font-bold text-cyber-purple">View All Mobile Games</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emulators -->
+    <section id="emulators" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="text-cyber-cyan font-orbitron text-sm tracking-widest">RETRO GAMING</span>
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold mt-2 mb-4">Gaming Emulators</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Relive the classics with the best emulators available. Play your favorite retro games on modern hardware.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Emulator 1 -->
+                <div class="glass-panel rounded-xl p-6 hover:border-cyber-cyan/50 transition-all group scroll-reveal">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-2xl">
+                            <i class="fas fa-gamepad text-cyber-cyan"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-cyber-cyan/20 text-cyber-cyan text-xs rounded-full font-bold">Multi-system</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl mb-2 group-hover:text-cyber-cyan transition-colors">RetroArch</h3>
+                    <p class="text-gray-400 text-sm mb-4">The ultimate all-in-one emulator supporting dozens of classic consoles.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex -space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-red-500 border-2 border-cyber-dark flex items-center justify-center text-xs">SN</div>
+                            <div class="w-8 h-8 rounded-full bg-purple-500 border-2 border-cyber-dark flex items-center justify-center text-xs">PS</div>
+                            <div class="w-8 h-8 rounded-full bg-blue-500 border-2 border-cyber-dark flex items-center justify-center text-xs">N</div>
+                        </div>
+                        <button class="text-cyber-cyan hover:text-white transition-colors text-sm font-medium">
+                            Download <i class="fas fa-download ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Emulator 2 -->
+                <div class="glass-panel rounded-xl p-6 hover:border-cyber-cyan/50 transition-all group scroll-reveal" style="transition-delay: 50ms;">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center text-2xl">
+                            <i class="fab fa-playstation text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full font-bold">PlayStation 2</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl mb-2 group-hover:text-cyber-cyan transition-colors">PCSX2</h3>
+                    <p class="text-gray-400 text-sm mb-4">The best PS2 emulator with excellent compatibility and upscaling.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex gap-1 text-yellow-400 text-xs">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <button class="text-cyber-cyan hover:text-white transition-colors text-sm font-medium">
+                            Download <i class="fas fa-download ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Emulator 3 -->
+                <div class="glass-panel rounded-xl p-6 hover:border-cyber-cyan/50 transition-all group scroll-reveal" style="transition-delay: 100ms;">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-900 flex items-center justify-center text-2xl">
+                            <i class="fas fa-cube text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full font-bold">GameCube / Wii</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl mb-2 group-hover:text-cyber-cyan transition-colors">Dolphin</h3>
+                    <p class="text-gray-400 text-sm mb-4">Play Nintendo GameCube and Wii games in HD with enhancements.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-500">HD Upscaling</span>
+                        <button class="text-cyber-cyan hover:text-white transition-colors text-sm font-medium">
+                            Download <i class="fas fa-download ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Emulator 4 -->
+                <div class="glass-panel rounded-xl p-6 hover:border-cyber-cyan/50 transition-all group scroll-reveal" style="transition-delay: 150ms;">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-900 flex items-center justify-center text-2xl">
+                            <i class="fab fa-playstation text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-indigo-500/20 text-indigo-400 text-xs rounded-full font-bold">PlayStation 3</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl mb-2 group-hover:text-cyber-cyan transition-colors">RPCS3</h3>
+                    <p class="text-gray-400 text-sm mb-4">The world's first PlayStation 3 emulator with growing compatibility.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-green-400"><i class="fas fa-check-circle mr-1"></i>Active Dev</span>
+                        <button class="text-cyber-cyan hover:text-white transition-colors text-sm font-medium">
+                            Download <i class="fas fa-download ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Emulator 5 -->
+                <div class="glass-panel rounded-xl p-6 hover:border-cyber-cyan/50 transition-all group scroll-reveal" style="transition-delay: 200ms;">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-yellow-600 to-orange-900 flex items-center justify-center text-2xl">
+                            <i class="fas fa-mobile-alt text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full font-bold">PSP</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl mb-2 group-hover:text-cyber-cyan transition-colors">PPSSPP</h3>
+                    <p class="text-gray-400 text-sm mb-4">Play PSP games on any device with resolution upscaling.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-500">Cross-platform</span>
+                        <button class="text-cyber-cyan hover:text-white transition-colors text-sm font-medium">
+                            Download <i class="fas fa-download ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Emulator 6 -->
+                <div class="glass-panel rounded-xl p-6 hover:border-cyber-cyan/50 transition-all group scroll-reveal" style="transition-delay: 250ms;">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-red-600 to-pink-900 flex items-center justify-center text-2xl">
+                            <i class="fas fa-cube text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded-full font-bold">Nintendo 3DS</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl mb-2 group-hover:text-cyber-cyan transition-colors">Azahar</h3>
+                    <p class="text-gray-400 text-sm mb-4">The best Nintendo 3DS emulator for PC and mobile.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-500">New Release</span>
+                        <button class="text-cyber-cyan hover:text-white transition-colors text-sm font-medium">
+                            Download <i class="fas fa-download ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fighting Games -->
+    <section class="py-20 bg-cyber-surface/30 relative overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyber-purple to-transparent"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="relative scroll-reveal">
+                    <div class="absolute -inset-4 bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl opacity-20 blur-xl"></div>
+                    <img src="https://images.unsplash.com/photo-1535905557558-afc4877a26fc?w=800&q=80" 
+                         alt="Fighting Games" class="relative rounded-2xl shadow-2xl w-full object-cover h-[500px]">
+                    <div class="absolute top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-lg font-orbitron font-bold animate-pulse">
+                        COMBAT
+                    </div>
+                </div>
+
+                <div class="scroll-reveal">
+                    <span class="text-orange-500 font-orbitron text-sm tracking-widest">FIGHTING GAMES</span>
+                    <h2 class="text-4xl md:text-5xl font-orbitron font-bold mt-2 mb-6">Fighting Games</h2>
+                    <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+                        Step into the arena with the best fighting games. From classic arcade brawlers to modern competitive esports titles.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="glass-panel rounded-lg p-4 flex items-center gap-4 hover:border-orange-500/50 transition-all cursor-pointer group">
+                            <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-yellow-400 to-red-500 flex items-center justify-center text-2xl font-bold text-white">
+                                SF
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-orange-400 transition-colors">Street Fighter 6</h4>
+                                <p class="text-sm text-gray-400">PS5, Xbox, PC</p>
+                            </div>
+                            <div class="text-orange-400">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-lg p-4 flex items-center gap-4 hover:border-orange-500/50 transition-all cursor-pointer group">
+                            <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-red-600 to-black flex items-center justify-center text-2xl font-bold text-white">
+                                MK
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-orange-400 transition-colors">Mortal Kombat 1</h4>
+                                <p class="text-sm text-gray-400">PS5, Xbox, Switch, PC</p>
+                            </div>
+                            <div class="text-orange-400">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-lg p-4 flex items-center gap-4 hover:border-orange-500/50 transition-all cursor-pointer group">
+                            <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-2xl font-bold text-white">
+                                GG
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-orange-400 transition-colors">Guilty Gear Strive</h4>
+                                <p class="text-sm text-gray-400">PS4, PS5, Xbox, PC</p>
+                            </div>
+                            <div class="text-orange-400">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-lg p-4 flex items-center gap-4 hover:border-orange-500/50 transition-all cursor-pointer group">
+                            <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-2xl font-bold text-white">
+                                FF
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-orange-400 transition-colors">Fatal Fury: City of Wolves</h4>
+                                <p class="text-sm text-gray-400">PS5, PS4, Xbox, PC</p>
+                            </div>
+                            <span class="px-2 py-1 bg-cyber-cyan/20 text-cyber-cyan text-xs rounded">NEW</span>
+                        </div>
+
+                        <div class="glass-panel rounded-lg p-4 flex items-center gap-4 hover:border-orange-500/50 transition-all cursor-pointer group">
+                            <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-gray-700 to-red-800 flex items-center justify-center text-2xl font-bold text-white">
+                                BK
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-orange-400 transition-colors">The First Berserker: Khazan</h4>
+                                <p class="text-sm text-gray-400">PS5, Xbox, PC</p>
+                            </div>
+                            <span class="px-2 py-1 bg-cyber-purple/20 text-cyber-purple text-xs rounded">HYPE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Video Section - PRESERVED AS REQUESTED -->
+    <section class="py-20">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 scroll-reveal">
+                <span class="text-cyber-cyan font-orbitron text-sm tracking-widest">FEATURED VIDEO</span>
+                <h2 class="text-3xl md:text-4xl font-orbitron font-bold mt-2 mb-4">Top Fighting Games Video</h2>
+            </div>
+            
+            <div class="video-container scroll-reveal">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                        title="Top Fighting Games Video" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wrestling Games -->
+    <section class="py-20 bg-cyber-surface/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1 scroll-reveal">
+                    <span class="text-red-500 font-orbitron text-sm tracking-widest">SPORTS ENTERTAINMENT</span>
+                    <h2 class="text-4xl md:text-5xl font-orbitron font-bold mt-2 mb-6">Wrestling Games</h2>
+                    <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                        Experience the drama and excitement of professional wrestling. WWE 2K25 leads the pack with the most comprehensive wrestling simulation ever.
+                    </p>
+
+                    <div class="glass-panel rounded-xl p-6 mb-6 border-l-4 border-red-600">
+                        <h3 class="font-orbitron font-bold text-2xl mb-4 text-white">WWE 2K25 Features</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fas fa-check-circle text-red-500"></i>
+                                <span>300+ Superstars including legends</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fas fa-check-circle text-red-500"></i>
+                                <span>New Bloodline Rules match type</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fas fa-check-circle text-red-500"></i>
+                                <span>Intergender matches enabled</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fas fa-check-circle text-red-500"></i>
+                                <span>Showcase Mode: The Bloodline</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fas fa-check-circle text-red-500"></i>
+                                <span>Universe & GM Modes</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fas fa-check-circle text-red-500"></i>
+                                <span>MyRise Career Mode</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fas fa-check-circle text-red-500"></i>
+                                <span>Online Multiplayer</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button class="px-8 py-3 bg-gradient-to-r from-red-600 to-red-800 rounded-lg font-orbitron font-bold hover:shadow-lg hover:shadow-red-600/30 transition-all">
+                        View All Wrestling Games
+                    </button>
+                </div>
+
+                <div class="order-1 lg:order-2 relative scroll-reveal">
+                    <div class="absolute -inset-4 bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl opacity-20 blur-xl"></div>
+                    <img src="https://images.unsplash.com/photo-1569517282132-25d22f4573e6?w=800&q=80" 
+                         alt="Wrestling" class="relative rounded-2xl shadow-2xl w-full object-cover h-[600px]">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sports Games -->
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="text-green-400 font-orbitron text-sm tracking-widest">ATHLETICS</span>
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold mt-2 mb-4">Sports Games</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    From the pitch to the court, experience the thrill of competition with the best sports simulation games.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass-panel rounded-2xl overflow-hidden group hover:border-green-500/50 transition-all scroll-reveal">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80" 
+                             alt="College Football" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cyber-dark to-transparent"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="px-3 py-1 bg-green-600/90 rounded text-xs font-bold text-white">NEW RELEASE</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-orbitron font-bold mb-2 group-hover:text-green-400 transition-colors">EA Sports College Football 26</h3>
+                        <p class="text-green-400 font-medium mb-4">College Football</p>
+                        <p class="text-gray-400 text-sm mb-4">Experience the passion of college football with updated rosters, enhanced gameplay mechanics, and immersive campus atmospheres.</p>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 bg-green-600/20 border border-green-500/30 rounded text-xs text-green-400">PS5</span>
+                            <span class="px-3 py-1 bg-green-600/20 border border-green-500/30 rounded text-xs text-green-400">Xbox</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl overflow-hidden group hover:border-green-500/50 transition-all scroll-reveal" style="transition-delay: 100ms;">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1564982752979-3f8bc9b6c8f5?w=800&q=80" 
+                             alt="Skateboarding" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cyber-dark to-transparent"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="px-3 py-1 bg-cyber-purple/90 rounded text-xs font-bold text-white">REMASTERED</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-orbitron font-bold mb-2 group-hover:text-green-400 transition-colors">Tony Hawk's Pro Skater 3+4</h3>
+                        <p class="text-green-400 font-medium mb-4">Skateboarding</p>
+                        <p class="text-gray-400 text-sm mb-4">Relive the legendary skateboarding games with enhanced graphics, all original skaters, and the iconic soundtrack.</p>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 bg-green-600/20 border border-green-500/30 rounded text-xs text-green-400">PS5</span>
+                            <span class="px-3 py-1 bg-green-600/20 border border-green-500/30 rounded text-xs text-green-400">Xbox</span>
+                            <span class="px-3 py-1 bg-green-600/20 border border-green-500/30 rounded text-xs text-green-400">PC</span>
+                            <span class="px-3 py-1 bg-green-600/20 border border-green-500/30 rounded text-xs text-green-400">Switch</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Library -->
+    <section id="video-library" class="py-20 bg-cyber-surface/30 relative">
+        <div class="absolute inset-0 grid-bg opacity-10"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="text-cyber-purple font-orbitron text-sm tracking-widest">CONTENT CREATOR HUB</span>
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold mt-2 mb-4">Free Video Library</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Find copyright-free gaming videos for your YouTube channel. All sources listed offer free, legal downloads for content creators.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Video Sources -->
+                <div class="lg:col-span-2">
+                    <h3 class="font-orbitron font-bold text-2xl mb-6 flex items-center gap-2">
+                        <i class="fas fa-video text-cyber-cyan"></i>
+                        Video Sources
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <a href="https://coverr.co" target="_blank" class="glass-panel rounded-xl p-5 hover:border-cyber-cyan/50 transition-all group block">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-cyber-cyan transition-colors">Coverr</h4>
+                                <i class="fas fa-external-link-alt text-gray-500 group-hover:text-cyber-cyan"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Free gaming stock footage in 4K & HD. Royalty-free for commercial use.</p>
+                        </a>
+
+                        <a href="https://pexels.com" target="_blank" class="glass-panel rounded-xl p-5 hover:border-cyber-cyan/50 transition-all group block">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-cyber-cyan transition-colors">Pexels</h4>
+                                <i class="fas fa-external-link-alt text-gray-500 group-hover:text-cyber-cyan"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Thousands of free gaming videos under Creative Commons license.</p>
+                        </a>
+
+                        <a href="https://pixabay.com" target="_blank" class="glass-panel rounded-xl p-5 hover:border-cyber-cyan/50 transition-all group block">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-cyber-cyan transition-colors">Pixabay</h4>
+                                <i class="fas fa-external-link-alt text-gray-500 group-hover:text-cyber-cyan"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Free gaming videos and motion graphics for any project.</p>
+                        </a>
+
+                        <a href="https://videvo.net" target="_blank" class="glass-panel rounded-xl p-5 hover:border-cyber-cyan/50 transition-all group block">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-cyber-cyan transition-colors">Videvo</h4>
+                                <i class="fas fa-external-link-alt text-gray-500 group-hover:text-cyber-cyan"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Free stock footage and motion graphics for gaming content.</p>
+                        </a>
+
+                        <a href="https://archive.org" target="_blank" class="glass-panel rounded-xl p-5 hover:border-cyber-cyan/50 transition-all group block">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-cyber-cyan transition-colors">Internet Archive</h4>
+                                <i class="fas fa-external-link-alt text-gray-500 group-hover:text-cyber-cyan"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Public domain gaming videos and classic game footage.</p>
+                        </a>
+
+                        <a href="https://mazwai.com" target="_blank" class="glass-panel rounded-xl p-5 hover:border-cyber-cyan/50 transition-all group block">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-orbitron font-bold text-lg group-hover:text-cyber-cyan transition-colors">Mazwai</h4>
+                                <i class="fas fa-external-link-alt text-gray-500 group-hover:text-cyber-cyan"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Creative Commons stock video footage free to use.</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Creator Tips -->
+                <div>
+                    <h3 class="font-orbitron font-bold text-2xl mb-6 flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-yellow-400"></i>
+                        Creator Tips
+                    </h3>
+                    
+                    <div class="glass-panel rounded-xl p-6 space-y-4">
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-cyber-purple/20 flex items-center justify-center text-cyber-purple font-bold text-sm shrink-0">1</div>
+                            <p class="text-sm text-gray-300">Always check the license before using any video</p>
+                        </div>
+                        
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-cyber-purple/20 flex items-center justify-center text-cyber-purple font-bold text-sm shrink-0">2</div>
+                            <p class="text-sm text-gray-300">Use Creative Commons CC0 for worry-free content</p>
+                        </div>
+                        
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-cyber-purple/20 flex items-center justify-center text-cyber-purple font-bold text-sm shrink-0">3</div>
+                            <p class="text-sm text-gray-300">Give attribution when required by CC-BY licenses</p>
+                        </div>
+                        
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-cyber-purple/20 flex items-center justify-center text-cyber-purple font-bold text-sm shrink-0">4</div>
+                            <p class="text-sm text-gray-300">Transform content significantly to avoid copyright issues</p>
+                        </div>
+                        
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-cyber-purple/20 flex items-center justify-center text-cyber-purple font-bold text-sm shrink-0">5</div>
+                            <p class="text-sm text-gray-300">Use multiple sources to create unique compilations</p>
+                        </div>
+                        
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-cyber-purple/20 flex items-center justify-center text-cyber-purple font-bold text-sm shrink-0">6</div>
+                            <p class="text-sm text-gray-300">Add your own commentary for fair use protection</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-gradient-to-r from-green-600/20 to-green-800/20 border border-green-500/30 rounded-xl">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fab fa-youtube text-red-500 text-2xl"></i>
+                            <h4 class="font-orbitron font-bold text-white">YouTube Ready</h4>
+                        </div>
+                        <p class="text-sm text-gray-300">
+                            All videos from these sources are safe for YouTube monetization. No copyright strikes when used correctly!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-cyber-purple/20 bg-cyber-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-gamepad text-3xl text-cyber-cyan"></i>
+                        <span class="font-orbitron text-2xl font-bold bg-gradient-to-r from-cyber-cyan to-cyber-purple bg-clip-text text-transparent">
+                            GameVaultX
+                        </span>
+                    </div>
+                    <p class="text-gray-400 mb-4 max-w-sm">
+                        Your ultimate destination for gaming culture. From retro classics to modern esports, we cover it all.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-cyber-surface flex items-center justify-center text-gray-400 hover:text-cyber-cyan hover:border-cyber-cyan border border-transparent transition-all">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-cyber-surface flex items-center justify-center text-gray-400 hover:text-cyber-purple hover:border-cyber-purple border border-transparent transition-all">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-cyber-surface flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-500 border border-transparent transition-all">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-cyber-surface flex items-center justify-center text-gray-400 hover:text-pink-500 hover:border-pink-500 border border-transparent transition-all">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-orbitron font-bold text-lg mb-4 text-white">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#trending" class="hover:text-cyber-cyan transition-colors">Trending Games</a></li>
+                        <li><a href="#categories" class="hover:text-cyber-cyan transition-colors">Categories</a></li>
+                        <li><a href="#emulators" class="hover:text-cyber-cyan transition-colors">Emulators</a></li>
+                        <li><a href="#video-library" class="hover:text-cyber-cyan transition-colors">Video Library</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-orbitron font-bold text-lg mb-4 text-white">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-cyber-cyan transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-cyber-cyan transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-cyber-cyan transition-colors">DMCA</a></li>
+                        <li><a href="#" class="hover:text-cyber-cyan transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-cyber-purple/10 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm">
+                    © 2025 GameVaultX. All rights reserved.
+                </p>
+                <p class="text-gray-600 text-sm mt-2 md:mt-0">
+                    Designed for gamers, by gamers.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Telegram Floating Button - PRESERVED AS REQUESTED -->
+    <a href="https://t.me/gamevaultx" target="_blank" class="telegram-float group">
+        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30 hover:scale-110 transition-transform">
+            <i class="fab fa-telegram-plane text-2xl text-white"></i>
+        </div>
+        <div class="absolute right-16 top-1/2 transform -translate-y-1/2 bg-cyber-surface px-4 py-2 rounded-lg border border-cyber-cyan/30 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            <span class="text-sm font-medium text-cyber-cyan">Join our Telegram</span>
+        </div>
+    </a>
+
+    <script>
+        // Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+            
+            // Navbar background
+            const navbar = document.getElementById('navbar');
+            if (winScroll > 50) {
+                navbar.classList.add('bg-cyber-dark/90');
+            } else {
+                navbar.classList.remove('bg-cyber-dark/90');
+            }
+        });
+
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el));
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Category Filter
+        function filterCategory(category) {
+            // Visual feedback
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(btn => {
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 100);
+            });
+            
+            // Show notification
+            showNotification(`Filtering ${category} games...`);
+        }
+
+        // Search Functionality
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                showNotification(`Searching for: ${e.target.value}`);
+            }
+        });
+
+        // Notification System
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.className = 'fixed top-20 right-4 bg-cyber-surface border border-cyber-cyan/50 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+            notif.innerHTML = `<i class="fas fa-info-circle text-cyber-cyan mr-2"></i>${message}`;
+            document.body.appendChild(notif);
+            
+            setTimeout(() => notif.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                notif.classList.add('translate-x-full');
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
+
+        // Parallax effect for hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.parallax-bg');
+            if (parallax) {
+                parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+
+        // Add hover tilt effect to game cards
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            });
+        });
+    </script>
+</body>
+</html>
